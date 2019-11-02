@@ -20,9 +20,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class RegistrationActivity extends AppCompatActivity {
     private Button mRegister;
-    private EditText mEmail, mPassword, mName, mBreed, mDOB;
+    private EditText mEmail, mPassword, mName, mBreed, mDOB, mPhone;
     private RadioGroup rdg;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthStateListener;
@@ -53,6 +56,7 @@ public class RegistrationActivity extends AppCompatActivity {
         mName = (EditText) findViewById(R.id.name);
         mBreed = (EditText) findViewById(R.id.breed);
         mDOB = (EditText) findViewById(R.id.dob);
+        mPhone = (EditText) findViewById(R.id.phone);
 
         rdg = (RadioGroup) findViewById(R.id.rdg);
 
@@ -71,6 +75,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 final String name = mName.getText().toString();
                 final String dob = mDOB.getText().toString();
                 final String breed = mBreed.getText().toString();
+                final String phone = mPhone.getText().toString();
                 mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -78,6 +83,9 @@ public class RegistrationActivity extends AppCompatActivity {
                             Toast.makeText(RegistrationActivity.this, "Unsuccessful", Toast.LENGTH_LONG).show();
                         } else {
                             String userID = mAuth.getCurrentUser().getUid();
+                            DatabaseReference currentUserDb = FirebaseDatabase.getInstance()
+                                    .getReference().child("Users")
+                                    .child(radioButton.getText().toString()).child(userID);
                             DatabaseReference currentUserDbName = FirebaseDatabase.getInstance()
                                     .getReference().child("Users")
                                     .child(radioButton.getText().toString()).child(userID).child("name");
@@ -86,10 +94,20 @@ public class RegistrationActivity extends AppCompatActivity {
                                     .getReference().child("Users")
                                     .child(radioButton.getText().toString()).child(userID).child("breed");
                             currentUserDbBreed.setValue(breed);
+                            DatabaseReference currentUserDbPhone = FirebaseDatabase.getInstance()
+                                    .getReference().child("Users")
+                                    .child(radioButton.getText().toString()).child(userID).child("phone");
+                            currentUserDbPhone.setValue(phone);
                             DatabaseReference currentUserDbDob = FirebaseDatabase.getInstance()
                                     .getReference().child("Users")
                                     .child(radioButton.getText().toString()).child(userID).child("dob");
                             currentUserDbDob.setValue(dob);
+                            Map userInfo = new HashMap<>();
+                            userInfo.put("name", name);
+                            userInfo.put("profileImageUrl", "default");
+
+                            currentUserDb.updateChildren(userInfo);
+
                         }
                     }
                 });
