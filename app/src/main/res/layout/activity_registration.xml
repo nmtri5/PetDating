@@ -32,7 +32,8 @@
         android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="password" />
+        android:hint="password"
+        android:inputType="textPassword"/>
 
     <TextView
         android:id="@+id/ins2"
@@ -66,6 +67,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Date of Birth" />
+
+    <EditText
+        android:id="@+id/phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Mobile Phone" />
 
     <RadioGroup
         android:layout_width="match_parent"

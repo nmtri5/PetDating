@@ -20,17 +20,33 @@
         android:layout_height="wrap_content"
         android:id="@+id/name"
         android:background="@null"
-        android:hint="Name"
+        android:hint="Pets's Name"
         android:layout_marginBottom="20sp"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/phone"
+        android:id="@+id/breed"
         android:background="@null"
-        android:hint="Phone"
+        android:hint="Breed"
         android:layout_marginBottom="20sp"/>
-    
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/dob"
+        android:background="@null"
+        android:hint="Date of Birth"
+        android:layout_marginBottom="20sp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editphone"
+        android:background="@null"
+        android:hint="Mobile Phone"
+        android:layout_marginBottom="20sp"/>
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
