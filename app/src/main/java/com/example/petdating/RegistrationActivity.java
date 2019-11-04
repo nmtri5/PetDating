@@ -85,25 +85,26 @@ public class RegistrationActivity extends AppCompatActivity {
                             String userID = mAuth.getCurrentUser().getUid();
                             DatabaseReference currentUserDb = FirebaseDatabase.getInstance()
                                     .getReference().child("Users")
-                                    .child(radioButton.getText().toString()).child(userID);
+                                    .child(userID);
                             DatabaseReference currentUserDbName = FirebaseDatabase.getInstance()
-                                    .getReference().child("Users")
-                                    .child(radioButton.getText().toString()).child(userID).child("name");
+                                    .getReference().child("Users").child(userID)
+                                    .child("name");
                             currentUserDbName.setValue(name);
                             DatabaseReference currentUserDbBreed = FirebaseDatabase.getInstance()
-                                    .getReference().child("Users")
-                                    .child(radioButton.getText().toString()).child(userID).child("breed");
+                                    .getReference().child("Users").child(userID)
+                                    .child("breed");
                             currentUserDbBreed.setValue(breed);
                             DatabaseReference currentUserDbPhone = FirebaseDatabase.getInstance()
-                                    .getReference().child("Users")
-                                    .child(radioButton.getText().toString()).child(userID).child("phone");
+                                    .getReference().child("Users").child(userID)
+                                    .child("phone");
                             currentUserDbPhone.setValue(phone);
                             DatabaseReference currentUserDbDob = FirebaseDatabase.getInstance()
-                                    .getReference().child("Users")
-                                    .child(radioButton.getText().toString()).child(userID).child("dob");
+                                    .getReference().child("Users").child(userID)
+                                    .child("dob");
                             currentUserDbDob.setValue(dob);
                             Map userInfo = new HashMap<>();
                             userInfo.put("name", name);
+                            userInfo.put("sex", radioButton.getText().toString());
                             userInfo.put("profileImageUrl", "default");
 
                             currentUserDb.updateChildren(userInfo);
