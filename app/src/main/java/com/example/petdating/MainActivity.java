@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     Toast.makeText(MainActivity.this, "new Connection", Toast.LENGTH_LONG).show();
-                    UserDb.child(oppositeUserSex).child(dataSnapshot.getKey()).child("connections").child("matches").child(currentUid).setValue(true);
+                    UserDb.child(dataSnapshot.getKey()).child("connections").child("matches").child(currentUid).setValue(true);
                     UserDb.child(currentUid).child("connections").child("matches").child(dataSnapshot.getKey()).setValue(true);
                 }
             }
