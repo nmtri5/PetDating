@@ -11,6 +11,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -47,7 +48,7 @@ public class SettingsActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
 
-    private String userID, name, breed, profileImageURL, dob, phone;
+    private String userID, name, breed, profileImageURL, dob, phone, userSex;
 
     private Uri resultUri;
 
@@ -56,7 +57,6 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        String userSex = getIntent().getExtras().getString("userSex");
         mNameField = (EditText) findViewById(R.id.name);
         mBreedField = (EditText) findViewById(R.id.breed);
         mDOBField = (EditText) findViewById(R.id.dob);
@@ -68,7 +68,7 @@ public class SettingsActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         userID = mAuth.getCurrentUser().getUid();
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(userSex).child(userID);
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(userID);
 
         getUserInfo();
         mProfileImage.setOnClickListener(new View.OnClickListener() {
@@ -144,17 +144,19 @@ public class SettingsActivity extends AppCompatActivity {
                         phone = map.get("phone").toString();
                         mPhoneField.setText(phone);
                     }
+                    if(map.get("sex") != null){
+                        userSex = map.get("sex").toString();
+                    }
                     if(map.get("profileImageUrl") != null){
                         profileImageURL = map.get("profileImageUrl").toString();
                         switch (profileImageURL) {
                             case "default":
-                                Glide.with(getApplication()).load("https://cdn3.iconfinder.com/data/icons/avatars-9/145/Avatar_Dog-512.png").into(mProfileImage);
+                                mProfileImage.setImageResource(R.drawable.defaultavatar);
                                 break;
                             default:
                                 Glide.with(getApplication()).load(profileImageURL).into(mProfileImage);
                                 break;
                         }
-                        Glide.with(getApplication()).load(profileImageURL).into(mProfileImage);
                     }
                 }
             }
