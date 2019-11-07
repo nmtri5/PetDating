@@ -44,7 +44,5 @@ public class MatchesAdapter extends RecyclerView.Adapter<MatchesViewHolders> {
     }
 
     @Override
-    public int getItemCount() {
-        return matchesList.size();
-    }
+    public int getItemCount() { return this.matchesList.size(); }
 }
