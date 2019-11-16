@@ -35,6 +35,12 @@
         android:hint="password"
         android:inputType="textPassword"/>
 
+    <EditText
+        android:id="@+id/phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Mobile Phone" />
+
     <TextView
         android:id="@+id/ins2"
         android:layout_width="match_parent"
@@ -57,22 +63,27 @@
         android:hint="Pet's Name" />
 
     <EditText
-        android:id="@+id/breed"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Breed" />
-
-    <EditText
         android:id="@+id/dob"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Date of Birth" />
 
-    <EditText
-        android:id="@+id/phone"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Mobile Phone" />
+        android:text="Select Breed"
+        android:textSize="15dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="10dp"/>
+
+    <Spinner
+        android:id="@+id/breed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.Spinner.Underlined"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:hint="Breed" />
 
     <RadioGroup
         android:layout_width="match_parent"

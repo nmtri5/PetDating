@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -40,7 +41,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SettingsActivity extends AppCompatActivity {
-    private EditText mNameField, mBreedField, mDOBField, mPhoneField;
+    private EditText mNameField, mDOBField, mPhoneField;
+    private Spinner mBreedSpinner;
     private Button mBack, mConfirm;
     private ImageView mProfileImage;
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
@@ -58,12 +60,16 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         mNameField = (EditText) findViewById(R.id.name);
-        mBreedField = (EditText) findViewById(R.id.breed);
+        mBreedSpinner = (Spinner) findViewById(R.id.breed);
         mDOBField = (EditText) findViewById(R.id.dob);
         mPhoneField = (EditText) findViewById(R.id.editphone);
         mProfileImage = (ImageView) findViewById(R.id.profileimage);
         mConfirm = (Button) findViewById(R.id.confirm);
         mBack = (Button) findViewById(R.id.back);
+        android.widget.ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.breedregistration, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
+        mBreedSpinner.setAdapter(adapter);
 
         mAuth = FirebaseAuth.getInstance();
         userID = mAuth.getCurrentUser().getUid();
@@ -134,7 +140,12 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                     if(map.get("breed") != null){
                         breed = map.get("breed").toString();
-                        mBreedField.setText(breed);
+                        for(int i= 0; i < mBreedSpinner.getAdapter().getCount(); i++){
+                            if(mBreedSpinner.getAdapter().getItem(i).toString().contains(breed))
+                            {
+                                mBreedSpinner.setSelection(i);
+                            }
+                        }
                     }
                     if(map.get("dob") != null){
                         dob = map.get("dob").toString();
@@ -170,7 +181,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void saveUserInformation() {
         name = mNameField.getText().toString();
-        breed = mBreedField.getText().toString();
+        breed = mBreedSpinner.getSelectedItem().toString();
         dob = mDOBField.getText().toString();
         phone = mPhoneField.getText().toString();
 

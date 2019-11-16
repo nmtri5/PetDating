@@ -22,13 +22,12 @@
         android:hint="Pets's Name"
         android:layout_marginBottom="20sp"/>
 
-    <EditText
+    <Spinner
+        android:id="@+id/breed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/breed"
-        android:background="@null"
-        android:hint="Breed"
-        android:layout_marginBottom="20sp"/>
+        android:layout_marginBottom="15dp"
+        android:hint="Breed" />
 
     <EditText
         android:layout_width="match_parent"

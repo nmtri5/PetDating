@@ -13,4 +13,15 @@
         <item>Pug</item>
         <item>Pit bull</item>
     </string-array>
+    <string-array name="breedregistration">
+        <item>Husky</item>
+        <item>Alaska</item>
+        <item>Golden Retriever</item>
+        <item>German Sheppard</item>
+        <item>Corgi</item>
+        <item>Chow Chow</item>
+        <item>Samoyed</item>
+        <item>Pug</item>
+        <item>Pit bull</item>
+    </string-array>
 </resources>

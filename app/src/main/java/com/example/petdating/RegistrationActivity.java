@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,7 +26,8 @@ import java.util.Map;
 
 public class RegistrationActivity extends AppCompatActivity {
     private Button mRegister;
-    private EditText mEmail, mPassword, mName, mBreed, mDOB, mPhone;
+    private EditText mEmail, mPassword, mName, mDOB, mPhone;
+    private Spinner mBreed;
     private RadioGroup rdg;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthStateListener;
@@ -54,11 +56,17 @@ public class RegistrationActivity extends AppCompatActivity {
         mEmail = (EditText) findViewById(R.id.email);
         mPassword = (EditText) findViewById(R.id.password);
         mName = (EditText) findViewById(R.id.name);
-        mBreed = (EditText) findViewById(R.id.breed);
+        mBreed = (Spinner) findViewById(R.id.breed);
         mDOB = (EditText) findViewById(R.id.dob);
         mPhone = (EditText) findViewById(R.id.phone);
 
         rdg = (RadioGroup) findViewById(R.id.rdg);
+
+        android.widget.ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.breedregistration, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
+        mBreed.setAdapter(adapter);
+        mBreed.setSelection(0);
 
         mRegister.setOnClickListener(new View.OnClickListener() {
 
@@ -74,8 +82,9 @@ public class RegistrationActivity extends AppCompatActivity {
                 final String password = mPassword.getText().toString();
                 final String name = mName.getText().toString();
                 final String dob = mDOB.getText().toString();
-                final String breed = mBreed.getText().toString();
+                final String breed = mBreed.getSelectedItem().toString();
                 final String phone = mPhone.getText().toString();
+
                 mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
