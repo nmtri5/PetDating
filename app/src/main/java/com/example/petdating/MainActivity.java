@@ -6,8 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -15,6 +19,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.petdating.Matches.MatchesActivity;
+import com.example.petdating.Utils.SendNotification;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -24,6 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
+import com.onesignal.OneSignal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private String currentUid;
     private DatabaseReference UserDb;
-    ListView listView;
     List<Cards> row_items;
 
     SwipeFlingAdapterView flingContainer;
@@ -47,10 +52,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        UserDb = FirebaseDatabase.getInstance().getReference().child("Users");
-
         mAuth = FirebaseAuth.getInstance();
         currentUid = mAuth.getCurrentUser().getUid();
+
+        OneSignal.startInit(this).init();
+        OneSignal.setSubscription(true);
+        OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
+            @Override
+            public void idsAvailable(String userId, String registrationId) {
+                FirebaseDatabase.getInstance().getReference().child("Users").child(currentUid).child("notificationKey").setValue(userId);
+            }
+        });
+        OneSignal.setInFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification);
+
+        new SendNotification("test", "heading", null);
+
+        UserDb = FirebaseDatabase.getInstance().getReference().child("Users");
+
         checkUserSex();
 
         row_items = new ArrayList<Cards>();
@@ -116,6 +134,28 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_option, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = null;
+        switch (item.getItemId()){
+            case R.id.filter:
+                Intent intent1 = new Intent(MainActivity.this, FilterActivity.class);
+                startActivity(intent1);
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+        return true;
+    }
+
     private void isConnectionMatch(String userId) {
         DatabaseReference currentUserConnectionsDb = UserDb.child(currentUid).child("connections").child("yep").child(userId);
         currentUserConnectionsDb.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -162,7 +202,11 @@ public class MainActivity extends AppCompatActivity {
                                 oppositeUserSex = "Male";
                                 break;
                         }
-                        getOppositeSexUsers();
+                        if (dataSnapshot.child("searchFilter").getValue().toString().equals("All")) {
+                            getOppositeSexUsers();
+                        } else {
+                            getOppositeUserSexWithFilter();
+                        }
                     }
                 }
             }
@@ -179,11 +223,62 @@ public class MainActivity extends AppCompatActivity {
         UserDb.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    try {
+                        if (dataSnapshot.child("sex").getValue() != null) {
+                                if (dataSnapshot.exists() && !dataSnapshot.child("connections").child("nope").hasChild(currentUid)
+                                        && !dataSnapshot.child("connections").child("yep").hasChild(currentUid)
+                                        && dataSnapshot.child("sex").getValue().toString().equals(oppositeUserSex)) {
+                                    String profileImageUrl = "default";
+                                    if (!dataSnapshot.child("profileImageUrl").getValue().equals("default")) {
+                                        profileImageUrl = dataSnapshot.child("profileImageUrl").getValue().toString();
+                                    }
+                                    Cards item = new Cards(dataSnapshot.getKey(), dataSnapshot.child("name").getValue().toString(), profileImageUrl);
+                                    row_items.add(item);
+                                    arrayAdapter.notifyDataSetChanged();
+                                }
+
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void getOppositeUserSexWithFilter() {
+        DatabaseReference currentUserDb = FirebaseDatabase.getInstance().getReference().child("Users");
+        SharedPreferences settings = getSharedPreferences("mysettings", MODE_PRIVATE);
+        final String StoredValue=settings.getString("spinnerValue", "All");
+        currentUserDb.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 try {
                     if (dataSnapshot.child("sex").getValue() != null) {
                         if (dataSnapshot.exists() && !dataSnapshot.child("connections").child("nope").hasChild(currentUid)
                                 && !dataSnapshot.child("connections").child("yep").hasChild(currentUid)
-                                && dataSnapshot.child("sex").getValue().toString().equals(oppositeUserSex)) {
+                                && dataSnapshot.child("sex").getValue().toString().equals(oppositeUserSex)
+                                && dataSnapshot.child("breed").getValue().toString().equals(StoredValue)) {
                             String profileImageUrl = "default";
                             if (!dataSnapshot.child("profileImageUrl").getValue().equals("default")) {
                                 profileImageUrl = dataSnapshot.child("profileImageUrl").getValue().toString();
@@ -221,6 +316,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void logoutUser(View view) {
+        OneSignal.setSubscription(false);
         mAuth.signOut();
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(intent);

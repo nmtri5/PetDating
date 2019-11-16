@@ -102,10 +102,15 @@ public class RegistrationActivity extends AppCompatActivity {
                                     .getReference().child("Users").child(userID)
                                     .child("dob");
                             currentUserDbDob.setValue(dob);
+                            DatabaseReference currentUserDbFilter = FirebaseDatabase.getInstance()
+                                    .getReference().child("Users").child(userID)
+                                    .child("searchFilter");
+                            currentUserDbFilter.setValue("default");
                             Map userInfo = new HashMap<>();
                             userInfo.put("name", name);
                             userInfo.put("sex", radioButton.getText().toString());
                             userInfo.put("profileImageUrl", "default");
+                            userInfo.put("searchFilter", "All");
 
                             currentUserDb.updateChildren(userInfo);
 
