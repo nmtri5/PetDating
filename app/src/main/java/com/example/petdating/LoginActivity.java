@@ -55,8 +55,8 @@ public class LoginActivity extends AppCompatActivity {
         mRegister = (Button) findViewById(R.id.register);
 
         mEmail = (EditText) findViewById(R.id.email);
-        mPassword = (EditText) findViewById(R.id.password);
 
+        mPassword = (EditText) findViewById(R.id.password);
         mRegister.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -68,19 +68,32 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         mLogin.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View view) {
                 final String email = mEmail.getText().toString();
                 final String password = mPassword.getText().toString();
-                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (!task.isSuccessful()) {
-                            Toast.makeText(LoginActivity.this, "Sign up unsuccessful", Toast.LENGTH_LONG).show();
+
+                if (!email.isEmpty() && !password.isEmpty()) {
+                    mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(LoginActivity.this, "Sign up unsuccessful", Toast.LENGTH_LONG).show();
+                            }
                         }
+                    });
+                } else {
+                    if (email.isEmpty()){
+                        mEmail.setError("Please input email");
+                        mEmail.requestFocus();
+                        return;
                     }
-                });
+                    if (password.isEmpty()){
+                        mPassword.setError("Please input password");
+                        mPassword.requestFocus();
+                        return;
+                    }
+                }
             }
         });
     }

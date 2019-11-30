@@ -63,6 +63,7 @@ public class RegistrationActivity extends AppCompatActivity {
         mBio = (EditText) findViewById(R.id.biofield);
 
         rdg = (RadioGroup) findViewById(R.id.rdg);
+        rdg.check(0);
 
         android.widget.ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.breedregistration, android.R.layout.simple_spinner_item);
@@ -77,9 +78,6 @@ public class RegistrationActivity extends AppCompatActivity {
                 int selectedID = rdg.getCheckedRadioButtonId();
                 final RadioButton radioButton = (RadioButton) findViewById(selectedID);
 
-                if(radioButton.getText() == null){
-                    return;
-                }
                 final String email = mEmail.getText().toString();
                 final String password = mPassword.getText().toString();
                 final String name = mName.getText().toString();
@@ -88,51 +86,92 @@ public class RegistrationActivity extends AppCompatActivity {
                 final String phone = mPhone.getText().toString();
                 final String bio = mBio.getText().toString();
 
-                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(!task.isSuccessful()){
-                            Toast.makeText(RegistrationActivity.this, "Unsuccessful", Toast.LENGTH_LONG).show();
-                        } else {
-                            String userID = mAuth.getCurrentUser().getUid();
-                            DatabaseReference currentUserDb = FirebaseDatabase.getInstance()
-                                    .getReference().child("Users")
-                                    .child(userID);
-                            DatabaseReference currentUserDbName = FirebaseDatabase.getInstance()
-                                    .getReference().child("Users").child(userID)
-                                    .child("name");
-                            currentUserDbName.setValue(name);
-                            DatabaseReference currentUserDbBreed = FirebaseDatabase.getInstance()
-                                    .getReference().child("Users").child(userID)
-                                    .child("breed");
-                            currentUserDbBreed.setValue(breed);
-                            DatabaseReference currentUserDbPhone = FirebaseDatabase.getInstance()
-                                    .getReference().child("Users").child(userID)
-                                    .child("phone");
-                            currentUserDbPhone.setValue(phone);
-                            DatabaseReference currentUserDbDob = FirebaseDatabase.getInstance()
-                                    .getReference().child("Users").child(userID)
-                                    .child("dob");
-                            currentUserDbDob.setValue(dob);
-                            DatabaseReference currentUserDbFilter = FirebaseDatabase.getInstance()
-                                    .getReference().child("Users").child(userID)
-                                    .child("searchFilter");
-                            currentUserDbFilter.setValue("default");
-                            DatabaseReference currentUserDbBio = FirebaseDatabase.getInstance()
-                                    .getReference().child("Users").child(userID)
-                                    .child("bio");
-                            currentUserDbBio.setValue(bio);
-                            Map userInfo = new HashMap<>();
-                            userInfo.put("name", name);
-                            userInfo.put("sex", radioButton.getText().toString());
-                            userInfo.put("profileImageUrl", "default");
-                            userInfo.put("searchFilter", "All");
+                if (!email.isEmpty() && !password.isEmpty() && !name.isEmpty()
+                        && !dob.isEmpty() && !phone.isEmpty() && !bio.isEmpty()) {
+                    mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(RegistrationActivity.this, "Unsuccessful", Toast.LENGTH_LONG).show();
+                            } else {
+                                String userID = mAuth.getCurrentUser().getUid();
+                                DatabaseReference currentUserDb = FirebaseDatabase.getInstance()
+                                        .getReference().child("Users")
+                                        .child(userID);
+                                DatabaseReference currentUserDbName = FirebaseDatabase.getInstance()
+                                        .getReference().child("Users").child(userID)
+                                        .child("name");
+                                currentUserDbName.setValue(name);
+                                DatabaseReference currentUserDbBreed = FirebaseDatabase.getInstance()
+                                        .getReference().child("Users").child(userID)
+                                        .child("breed");
+                                currentUserDbBreed.setValue(breed);
+                                DatabaseReference currentUserDbPhone = FirebaseDatabase.getInstance()
+                                        .getReference().child("Users").child(userID)
+                                        .child("phone");
+                                currentUserDbPhone.setValue(phone);
+                                DatabaseReference currentUserDbDob = FirebaseDatabase.getInstance()
+                                        .getReference().child("Users").child(userID)
+                                        .child("dob");
+                                currentUserDbDob.setValue(dob);
+                                DatabaseReference currentUserDbFilter = FirebaseDatabase.getInstance()
+                                        .getReference().child("Users").child(userID)
+                                        .child("searchFilter");
+                                currentUserDbFilter.setValue("default");
+                                DatabaseReference currentUserDbBio = FirebaseDatabase.getInstance()
+                                        .getReference().child("Users").child(userID)
+                                        .child("bio");
+                                currentUserDbBio.setValue(bio);
+                                Map userInfo = new HashMap<>();
+                                userInfo.put("name", name);
+                                userInfo.put("sex", radioButton.getText().toString());
+                                userInfo.put("profileImageUrl", "default");
+                                userInfo.put("searchFilter", "All");
 
-                            currentUserDb.updateChildren(userInfo);
+                                currentUserDb.updateChildren(userInfo);
 
+                            }
                         }
+                    });
+                } else {
+                    if (email.isEmpty()){
+                        mEmail.setError("Please input email");
+                        mEmail.requestFocus();
+                        return;
                     }
-                });
+
+                    if (password.isEmpty()){
+                        mPassword.setError("Please input password");
+                        mPassword.requestFocus();
+                        return;
+                    }
+
+                    if (phone.isEmpty()){
+                        mPhone.setError("Please input phone");
+                        mPhone.requestFocus();
+                        return;
+                    }
+
+                    if (dob.isEmpty()){
+                        mDOB.setError("Please input your date of birth");
+                        mDOB.requestFocus();
+                        return;
+                    }
+
+                    if (name.isEmpty()){
+                        mName.setError("Please input pet name");
+                        mName.requestFocus();
+                        return;
+                    }
+
+                    if (bio.isEmpty()){
+                        mBio.setError("Please introduce yourself");
+                        mBio.requestFocus();
+                        return;
+                    }
+
+
+                }
             }
         });
     }
