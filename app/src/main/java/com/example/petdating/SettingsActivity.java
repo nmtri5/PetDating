@@ -41,7 +41,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SettingsActivity extends AppCompatActivity {
-    private EditText mNameField, mDOBField, mPhoneField;
+    private EditText mNameField, mDOBField, mPhoneField, mBioField;
     private Spinner mBreedSpinner;
     private Button mBack, mConfirm;
     private ImageView mProfileImage;
@@ -50,7 +50,7 @@ public class SettingsActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
 
-    private String userID, name, breed, profileImageURL, dob, phone, userSex;
+    private String userID, name, breed, profileImageURL, dob, phone, userSex, bio;
 
     private Uri resultUri;
 
@@ -63,6 +63,7 @@ public class SettingsActivity extends AppCompatActivity {
         mBreedSpinner = (Spinner) findViewById(R.id.breed);
         mDOBField = (EditText) findViewById(R.id.dob);
         mPhoneField = (EditText) findViewById(R.id.editphone);
+        mBioField = (EditText) findViewById(R.id.editbio);
         mProfileImage = (ImageView) findViewById(R.id.profileimage);
         mConfirm = (Button) findViewById(R.id.confirm);
         mBack = (Button) findViewById(R.id.back);
@@ -158,6 +159,10 @@ public class SettingsActivity extends AppCompatActivity {
                     if(map.get("sex") != null){
                         userSex = map.get("sex").toString();
                     }
+                    if(map.get("bio") != null){
+                        bio = map.get("bio").toString();
+                        mBioField.setText(bio);
+                    }
                     if(map.get("profileImageUrl") != null){
                         profileImageURL = map.get("profileImageUrl").toString();
                         switch (profileImageURL) {
@@ -184,12 +189,14 @@ public class SettingsActivity extends AppCompatActivity {
         breed = mBreedSpinner.getSelectedItem().toString();
         dob = mDOBField.getText().toString();
         phone = mPhoneField.getText().toString();
+        bio = mBioField.getText().toString();
 
         Map userInfo = new HashMap();
         userInfo.put("name", name);
         userInfo.put("breed", breed);
         userInfo.put("dob", dob);
         userInfo.put("phone", phone);
+        userInfo.put("bio", bio);
 
         mDatabase.updateChildren(userInfo);
         if(resultUri != null) {

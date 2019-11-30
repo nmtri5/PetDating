@@ -24,4 +24,6 @@
         <item>Pug</item>
         <item>Pit bull</item>
     </string-array>
+
+    <string name="codesent">Please enter the code which was sent to your provided number</string>
 </resources>

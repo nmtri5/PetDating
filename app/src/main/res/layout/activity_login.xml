@@ -14,12 +14,22 @@
         android:layout_gravity="center"
         android:layout_marginBottom="50dp"/>
 
+    <TextView
+        android:text="EMAIL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <EditText
         android:id="@+id/email"
         android:layout_width="match_parent"
+        android:layout_marginBottom="20px"
         android:layout_height="wrap_content"
-        android:hint="email" />
+        android:hint="johndoe@gmail.com" />
+
+    <TextView
+    android:text="PASSWORD"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>
 
     <EditText
         android:id="@+id/password"
@@ -31,13 +41,26 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/browser_actions_bg_grey"
+        android:layout_marginBottom="20px"
+        android:layout_marginLeft="100px"
+        android:layout_marginRight="100px"
         android:id="@+id/login"
         android:text="Login"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="100px"
+        android:layout_marginRight="100px"
         android:id="@+id/register"
         android:text="Register"/>
+
+    <ProgressBar
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/progressbar"/>
 
 </LinearLayout>

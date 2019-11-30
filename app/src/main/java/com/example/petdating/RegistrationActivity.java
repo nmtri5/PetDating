@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -26,7 +27,7 @@ import java.util.Map;
 
 public class RegistrationActivity extends AppCompatActivity {
     private Button mRegister;
-    private EditText mEmail, mPassword, mName, mDOB, mPhone;
+    private EditText mEmail, mPassword, mName, mDOB, mPhone, mBio;
     private Spinner mBreed;
     private RadioGroup rdg;
     private FirebaseAuth mAuth;
@@ -59,6 +60,7 @@ public class RegistrationActivity extends AppCompatActivity {
         mBreed = (Spinner) findViewById(R.id.breed);
         mDOB = (EditText) findViewById(R.id.dob);
         mPhone = (EditText) findViewById(R.id.phone);
+        mBio = (EditText) findViewById(R.id.biofield);
 
         rdg = (RadioGroup) findViewById(R.id.rdg);
 
@@ -84,6 +86,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 final String dob = mDOB.getText().toString();
                 final String breed = mBreed.getSelectedItem().toString();
                 final String phone = mPhone.getText().toString();
+                final String bio = mBio.getText().toString();
 
                 mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -115,6 +118,10 @@ public class RegistrationActivity extends AppCompatActivity {
                                     .getReference().child("Users").child(userID)
                                     .child("searchFilter");
                             currentUserDbFilter.setValue("default");
+                            DatabaseReference currentUserDbBio = FirebaseDatabase.getInstance()
+                                    .getReference().child("Users").child(userID)
+                                    .child("bio");
+                            currentUserDbBio.setValue(bio);
                             Map userInfo = new HashMap<>();
                             userInfo.put("name", name);
                             userInfo.put("sex", radioButton.getText().toString());

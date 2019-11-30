@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,6 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 import com.onesignal.OneSignal;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -128,7 +131,9 @@ public class MainActivity extends AppCompatActivity {
         flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
-
+                Intent intent = new Intent(MainActivity.this, ProfileInfoActivity.class);
+                intent.putExtra("userinfo", (Serializable) dataObject);
+                startActivity(intent);
             }
         });
 
@@ -232,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
                                     if (!dataSnapshot.child("profileImageUrl").getValue().equals("default")) {
                                         profileImageUrl = dataSnapshot.child("profileImageUrl").getValue().toString();
                                     }
-                                    Cards item = new Cards(dataSnapshot.getKey(), dataSnapshot.child("name").getValue().toString(), profileImageUrl);
+                                    Cards item = new Cards(dataSnapshot.getKey(), dataSnapshot.child("name").getValue().toString(), profileImageUrl, dataSnapshot.child("dob").getValue().toString(), dataSnapshot.child("breed").getValue().toString(), dataSnapshot.child("bio").getValue().toString());
                                     row_items.add(item);
                                     arrayAdapter.notifyDataSetChanged();
                                 }
@@ -283,7 +288,7 @@ public class MainActivity extends AppCompatActivity {
                             if (!dataSnapshot.child("profileImageUrl").getValue().equals("default")) {
                                 profileImageUrl = dataSnapshot.child("profileImageUrl").getValue().toString();
                             }
-                            Cards item = new Cards(dataSnapshot.getKey(), dataSnapshot.child("name").getValue().toString(), profileImageUrl);
+                            Cards item = new Cards(dataSnapshot.getKey(), dataSnapshot.child("name").getValue().toString(), profileImageUrl, dataSnapshot.child("dob").getValue().toString(), dataSnapshot.child("breed").getValue().toString(), dataSnapshot.child("bio").getValue().toString());
                             row_items.add(item);
                             arrayAdapter.notifyDataSetChanged();
                         }
